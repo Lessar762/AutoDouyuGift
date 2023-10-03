@@ -11,7 +11,8 @@ serve_base_url = 'https://sc.ftqq.com/'
 room_id = '93589'#os.environ['ROOMID']
 room_id2 = '8834570'
 cookie = os.environ['COOKIE']
-
+sc_on=os.environ['SCON']
+sc_key=os.environ['SCKEY']
 
 headers = {
     'authority': 'www.douyu.com',
