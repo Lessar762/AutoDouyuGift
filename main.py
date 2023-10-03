@@ -7,17 +7,16 @@ backpack_uri = 'japi/prop/backpack/web/v1'
 send_gift_uri = 'japi/prop/donate/mainsite/v1'
 serve_base_url = 'https://sc.ftqq.com/'
 
-room_id = os.environ['ROOMID']
+#2023.10.3->两个房间号第一个送一根维持牌子，第二个刷满
+room_id = '93589'#os.environ['ROOMID']
+room_id2 = '8834570'
 cookie = os.environ['COOKIE']
-sc_key = os.environ['SCKEY']
-sc_on = os.environ['SCON'] == 'ON'
+
 
 headers = {
     'authority': 'www.douyu.com',
-    'sec-ch-ua': '" Not;A Brand";v="99", "Microsoft Edge";v="97", "Chromium";v="97"',
     'accept': 'application/json, text/plain, */*',
     'x-requested-with': 'XMLHttpRequest',
-    'sec-ch-ua-mobile': '?0',
     'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36 Edg/97.0.1072.69',
     'referer': f'https://www.douyu.com/{room_id}',
     'accept-language': 'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6',
@@ -65,15 +64,24 @@ def send_gift(gift_list: list) -> list:
             'roomId': room_id,
             'bizExt': '{"yzxq":{}}'
         }
+        data2 = {
+            'propId': gift_id,
+            'propCount': 1,
+            'roomId': room_id2,
+            'bizExt': '{"yzxq":{}}'
+        }
         succ_cnt = 0
         err_msg_list = []
         for _ in range(0, gift_num):
-            res = requests.post(send_gift_url, data=data, headers=headers, cookies=format_cookie(cookie))
+            if succ_cnt >= 1:
+                res = requests.post(send_gift_url, data=data2, headers=headers, cookies=format_cookie(cookie))
+            else:
+                res = requests.post(send_gift_url, data=data, headers=headers, cookies=format_cookie(cookie))
             if res.status_code == 200 and res.json()['error'] == 0:
                 succ_cnt += 1
             else:
                 err_msg_list.append(res.json())
-                message_list.append(f'赠送 {gift_num} 个{gift_name}给房间: {room_id} 出现错误，错误代码为 {res.status_code} : {res.json()}')
+            message_list.append(f'赠送 {gift_num} 个{gift_name}给房间: {room_id} 出现错误，错误代码为 {res.status_code} : {res.json()}')
         message_list.append(f'成功赠送了 {succ_cnt}/{gift_num} 个{gift_name}给房间: {room_id}')
         message_list.append(f'赠送出现错误，共 {gift_num - succ_cnt}/{gift_num} 出现错误，错误信息为 {err_msg_list}')
     return message_list
@@ -83,5 +91,3 @@ if __name__ == '__main__':
     gift_list = query_gift_list()
     msg_list = send_gift(gift_list)
     print(msg_list)
-    if sc_on:
-        send_message_list(msg_list, sc_key)
