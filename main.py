@@ -82,12 +82,13 @@ def send_gift(gift_list: list) -> list:
             else:
                 err_msg_list.append(res.json())
             message_list.append(f'赠送 {gift_num} 个{gift_name}给房间: {room_id} 出现错误，错误代码为 {res.status_code} : {res.json()}')
-        message_list.append(f'成功赠送了 {succ_cnt}/{gift_num} 个{gift_name}给房间: {room_id}')
+        message_list.append(f'成功赠送了 1/{gift_num} 个{gift_name}给房间: {room_id},{gift_num - 1}给房间:{room_id2}')
         message_list.append(f'赠送出现错误，共 {gift_num - succ_cnt}/{gift_num} 出现错误，错误信息为 {err_msg_list}')
     return message_list
-
 
 if __name__ == '__main__':
     gift_list = query_gift_list()
     msg_list = send_gift(gift_list)
     print(msg_list)
+    if sc_on:
+        send_message_list(msg_list, sc_key)
