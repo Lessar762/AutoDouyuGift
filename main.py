@@ -82,9 +82,11 @@ def send_gift(gift_list: list) -> list:
                 succ_cnt += 1
             else:
                 err_msg_list.append(res.json())
-            message_list.append(f'赠送 {gift_num} 个{gift_name}给房间: {room_id} 出现错误，错误代码为 {res.status_code} : {res.json()}')
-        message_list.append(f'成功赠送了 1/{gift_num} 个{gift_name}给房间: {room_id},{gift_num - 1}给房间:{room_id2}')
-        message_list.append(f'赠送出现错误，共 {gift_num - succ_cnt}/{gift_num} 出现错误，错误信息为 {err_msg_list}')
+                message_list.append(f'赠送 {gift_num} 个{gift_name}给房间: {room_id} 出现错误，错误代码为 {res.status_code} : {res.json()}')
+        if succ_cnt = gift_num:
+            message_list.append(f'成功赠送了 1/{gift_num} 个{gift_name}给房间: {room_id},{gift_num - 1}/{gift_num}给房间:{room_id2}')
+        else:
+            message_list.append(f'赠送出现错误，共 {gift_num - succ_cnt}/{gift_num} 出现错误，错误信息为 {err_msg_list}')
     return message_list
 
 if __name__ == '__main__':
